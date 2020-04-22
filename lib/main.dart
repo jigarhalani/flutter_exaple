@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './app_screen/list_view.dart';
-import './app_screen/stateful_view_example.dart';
+import 'package:my_app/app_screen/calculator_app.dart';
+import 'package:my_app/app_screen/list_view.dart';
+import 'package:my_app/app_screen/stateful_view_example.dart';
 
 void main() {
   runApp(MyApp());
@@ -52,7 +53,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Flutter App",
+      theme: ThemeData(
+        primaryColor: Colors.indigo,
+        accentColor: Colors.green,
+        brightness: Brightness.dark,
+      ),
       routes: {
         '/second': (context) => ImageDemo(),
         '/third': (context) => RowDemo(),
@@ -60,7 +67,7 @@ class MyApp extends StatelessWidget {
         '/fifth': (context) => ListViewDemo(),
         '/listview': (context) => RandomListViewExample(),
         '/statefullexample': (context) => FavouriteCity(),
-        '/calculatorexample': (context) => FavouriteCity(),
+        '/calculatorexample': (context) => calculatorForm(),
       },
       home: Home(),
     );
@@ -139,7 +146,10 @@ class Home extends StatelessWidget {
                 }),
             RaisedButton(onPressed: (){
               Navigator.pushNamed(context, '/statefullexample');
-            },child: Text('StateFull Example'),)
+            },child: Text('StateFull Example'),),
+            RaisedButton(onPressed: (){
+              Navigator.pushNamed(context, '/calculatorexample');
+            },child: Text('Calculator Example'),)
           ]),
         ]),
       ),
