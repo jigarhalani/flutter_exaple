@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class calculatorForm extends StatefulWidget {
+class CalculatorForm extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -8,7 +8,7 @@ class calculatorForm extends StatefulWidget {
   }
 }
 
-class _calculatorFormState extends State<calculatorForm> {
+class _calculatorFormState extends State<CalculatorForm> {
   var _formKey = GlobalKey<FormState>();
   var _currencies = ['rupees', 'dollers', 'euro'];
   final _maximumPadding = 5.0;

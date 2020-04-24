@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/app_screen/calculator_app.dart';
 import 'package:my_app/app_screen/list_view.dart';
+import 'package:my_app/app_screen/note_detail.dart';
+import 'package:my_app/app_screen/note_list.dart';
 import 'package:my_app/app_screen/stateful_view_example.dart';
 
 void main() {
@@ -67,14 +69,13 @@ class MyApp extends StatelessWidget {
         '/fifth': (context) => ListViewDemo(),
         '/listview': (context) => RandomListViewExample(),
         '/statefullexample': (context) => FavouriteCity(),
-        '/calculatorexample': (context) => calculatorForm(),
+        '/calculatorexample': (context) => CalculatorForm(),
+        '/notes': (context) => NoteList(),
       },
       home: Home(),
     );
   }
 }
-
-
 
 class Home extends StatelessWidget {
   var counter = 0;
@@ -118,7 +119,7 @@ class Home extends StatelessWidget {
       ),
       body: Center(
         child: Row(children: <Widget>[
-          Column( children: <Widget>[
+          Column(children: <Widget>[
             Text.rich(
               TextSpan(children: <TextSpan>[
                 TextSpan(
@@ -144,12 +145,21 @@ class Home extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/listview');
                 }),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/statefullexample');
+              },
+              child: Text('StateFull Example'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/calculatorexample');
+              },
+              child: Text('Calculator Example'),
+            ),
             RaisedButton(onPressed: (){
-              Navigator.pushNamed(context, '/statefullexample');
-            },child: Text('StateFull Example'),),
-            RaisedButton(onPressed: (){
-              Navigator.pushNamed(context, '/calculatorexample');
-            },child: Text('Calculator Example'),)
+              Navigator.pushNamed(context, '/notes');
+            },child: Text('Notes Demo'),)
           ]),
         ]),
       ),
@@ -166,8 +176,7 @@ class Home extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return alertDialog;
-        }
-    );
+        });
   }
 }
 
@@ -314,7 +323,7 @@ class ListViewDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: ListView(
-       children: <Widget>[
+      children: <Widget>[
         ListTile(
           leading: Icon(
             Icons.mail,
