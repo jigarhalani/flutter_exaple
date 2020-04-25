@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'dart:async';
+import 'package:my_app/models/note.dart';
+import 'package:my_app/utils/database_helper.dart';
+import 'package:sqflite/sqflite.dart';
 
 class NoteDetailsForm extends StatefulWidget {
-  String appBarTitle;
+  final String appBarTitle;
+  final Note note;
 
-  NoteDetailsForm(this.appBarTitle);
+  NoteDetailsForm(this.note, this.appBarTitle);
 
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return NoteDetailsFormState(this.appBarTitle);
+    return NoteDetailsFormState(this.note, this.appBarTitle);
   }
 }
 
@@ -16,14 +22,20 @@ class NoteDetailsFormState extends State<NoteDetailsForm> {
   static var _priorities = ['high', 'low'];
 
   String appBarTitle;
+  Note note;
 
-  NoteDetailsFormState(this.appBarTitle);
+  DatabaseHelper helper = DatabaseHelper();
+
+  NoteDetailsFormState(this.note, this.appBarTitle);
 
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    titleController.text = note.title;
+    descriptionController.text = note.description;
+
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     // TODO: implement build
@@ -56,9 +68,10 @@ class NoteDetailsFormState extends State<NoteDetailsForm> {
                         );
                       }).toList(),
                       style: textStyle,
-                      value: 'low',
+                      value: getPriorityAsString(note.priority),
                       onChanged: (value) {
                         setState(() {
+                          updatePriorityAsInt(value);
                           print(value);
                         });
                       }),
@@ -69,7 +82,7 @@ class NoteDetailsFormState extends State<NoteDetailsForm> {
                     controller: titleController,
                     style: textStyle,
                     onChanged: (value) {
-                      print('changed');
+                      updateTitle();
                     },
                     decoration: InputDecoration(
                         labelText: 'Title',
@@ -85,6 +98,7 @@ class NoteDetailsFormState extends State<NoteDetailsForm> {
                     style: textStyle,
                     onChanged: (value) {
                       print('changed');
+                      updateDescription();
                     },
                     decoration: InputDecoration(
                         labelText: 'Description',
@@ -103,7 +117,7 @@ class NoteDetailsFormState extends State<NoteDetailsForm> {
                         textColor: Theme.of(context).primaryColorLight,
                         onPressed: () {
                           setState(() {
-                            print('Button clicked');
+                            _save();
                           });
                         },
                         child: Text(
@@ -121,6 +135,7 @@ class NoteDetailsFormState extends State<NoteDetailsForm> {
                         onPressed: () {
                           setState(() {
                             print('Delete clicked');
+                            _delete(context,note);
                           });
                         },
                         child: Text(
@@ -138,6 +153,81 @@ class NoteDetailsFormState extends State<NoteDetailsForm> {
   }
 
   void moveToLastScreen() {
-    Navigator.pop(context);
+    Navigator.pop(context, true);
+  }
+
+  // convert String priority in the form of integer before saving it to database
+  void updatePriorityAsInt(String value) {
+    switch (value) {
+      case 'high':
+        note.priority = 1;
+        break;
+      case 'low':
+        note.priority = 2;
+        break;
+    }
+  }
+
+  // convert Integere priority in the form of integer before saving it to database
+  String getPriorityAsString(int value) {
+    String priority;
+
+    switch (value) {
+      case 1:
+        priority = _priorities[0];
+        break;
+      case 2:
+        priority = _priorities[1];
+        break;
+    }
+
+    return priority;
+  }
+
+  void updateTitle() {
+    note.title = titleController.text;
+  }
+
+  void updateDescription() {
+    note.description = descriptionController.text;
+  }
+
+  void _save() async {
+    moveToLastScreen();
+    note.date = DateFormat.yMMMd().format(DateTime.now());
+    int result;
+    if (note.id != null) {
+      result = await helper.updateNote(note);
+    } else {
+      result = await helper.insertNote(note);
+    }
+    if (result != 0) {
+      _showAlertDialog('Status', 'Note Saved Succesfully');
+    } else {
+      _showAlertDialog('Status', 'Problem Saving Note');
+    }
+  }
+
+  void _showAlertDialog(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+
+    showDialog(context: context, builder: (_) => alertDialog);
+  }
+
+  void _delete(BuildContext context, Note note) async {
+    moveToLastScreen();
+    if (note.id == null) {
+      _showAlertDialog('Status', 'No Note was deleted');
+      return;
+    }
+    int result = await helper.deleteNote(note.id);
+    if (result != 0) {
+      _showAlertDialog('Status', 'Note Deleted Successfully');
+    } else {
+      _showAlertDialog('Status', 'Some error occured');
+    }
   }
 }
