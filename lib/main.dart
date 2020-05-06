@@ -3,7 +3,10 @@ import 'package:my_app/app_screen/calculator_app.dart';
 import 'package:my_app/app_screen/list_view.dart';
 import 'package:my_app/app_screen/note_detail.dart';
 import 'package:my_app/app_screen/note_list.dart';
+import 'package:my_app/app_screen/provider_demo.dart';
+import 'package:my_app/app_screen/startup_namer.dart';
 import 'package:my_app/app_screen/stateful_view_example.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -54,26 +57,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Flutter App",
-      theme: ThemeData(
-        primaryColor: Colors.indigo,
-        accentColor: Colors.green,
-        brightness: Brightness.dark,
-      ),
-      routes: {
-        '/second': (context) => ImageDemo(),
-        '/third': (context) => RowDemo(),
-        '/fourth': (context) => ColumnDemo(),
-        '/fifth': (context) => ListViewDemo(),
-        '/listview': (context) => RandomListViewExample(),
-        '/statefullexample': (context) => FavouriteCity(),
-        '/calculatorexample': (context) => CalculatorForm(),
-        '/notes': (context) => NoteList(),
-      },
-      home: Home(),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CounterBlock>.value(
+            value: CounterBlock(),
+          )
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: "Flutter App",
+          theme: ThemeData(
+            primaryColor: Colors.indigo,
+            accentColor: Colors.green,
+            brightness: Brightness.dark,
+          ),
+          routes: {
+            '/second': (context) => ImageDemo(),
+            '/third': (context) => RowDemo(),
+            '/fourth': (context) => ColumnDemo(),
+            '/fifth': (context) => ListViewDemo(),
+            '/listview': (context) => RandomListViewExample(),
+            '/statefullexample': (context) => FavouriteCity(),
+            '/calculatorexample': (context) => CalculatorForm(),
+            '/notes': (context) => NoteList(),
+            '/providerDemo': (context) => ProviderDemo(),
+            '/startupNammer': (context) =>RandomWord(),
+          },
+          home: Home(),
+        ));
   }
 }
 
@@ -157,9 +168,24 @@ class Home extends StatelessWidget {
               },
               child: Text('Calculator Example'),
             ),
-            RaisedButton(onPressed: (){
-              Navigator.pushNamed(context, '/notes');
-            },child: Text('Notes Demo'),)
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/notes');
+              },
+              child: Text('Notes Demo'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/providerDemo');
+              },
+              child: Text('ProviderDemo'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/startupNammer');
+              },
+              child: Text('Startup Nammer'),
+            )
           ]),
         ]),
       ),
