@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/app_screen/calculator_app.dart';
+import 'package:my_app/app_screen/chat_item_screen.dart';
 import 'package:my_app/app_screen/list_view.dart';
 import 'package:my_app/app_screen/note_detail.dart';
 import 'package:my_app/app_screen/note_list.dart';
@@ -69,7 +70,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primaryColor: Colors.indigo,
             accentColor: Colors.green,
-            brightness: Brightness.dark,
+            brightness: Brightness.light,
           ),
           routes: {
             '/second': (context) => ImageDemo(),
@@ -82,6 +83,7 @@ class MyApp extends StatelessWidget {
             '/notes': (context) => NoteList(),
             '/providerDemo': (context) => ProviderDemo(),
             '/startupNammer': (context) =>RandomWord(),
+            '/whatsapp': (context) =>ChatItemScreen(),
           },
           home: Home(),
         ));
@@ -185,7 +187,10 @@ class Home extends StatelessWidget {
                 Navigator.pushNamed(context, '/startupNammer');
               },
               child: Text('Startup Nammer'),
-            )
+            ),
+            RaisedButton(onPressed:(){
+                Navigator.pushNamed(context, '/whatsapp');
+            },child: Text('Chat Screen'),)
           ]),
         ]),
       ),
